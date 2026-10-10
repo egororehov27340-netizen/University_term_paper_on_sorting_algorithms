@@ -228,42 +228,51 @@ def main():
             bin_search(data)
 
         elif User_ansver=='3': #Пузырьковая сортировка 
+            start=time.perf_counter()
             data=bubble_sort(data)
+            t=(time.perf_counter()-start)
             if sort_check(data):    
-                print(f'Массив отсортирован')
+                print(f'Массив отсортирован за {t:.7f} секунд')
                 input('Нажмите, чтобы продолжить\n')
             else:
-                input('Ошибка\n')
+                input('Ошибка\n')   
 
         elif User_ansver=='4': #Сортировка вставками
+            start=time.perf_counter()
             data=insertion_sort(data)
+            t=(time.perf_counter()-start)
             if sort_check(data):    
-                print(f'Массив отсортирован')
+                print(f'Массив отсортирован за {t:.7f} секунд')
                 input('Нажмите, чтобы продолжить\n')
             else:
-                input('Ошибка\n')
+                input('Ошибка\n')   
 
         elif User_ansver=='5': #Сортировка дополнительный массивом
+            start=time.perf_counter()
             data=sort_by_another_massive(data)
+            t=(time.perf_counter()-start)
             if sort_check(data):    
-                print(f'Массив отсортирован')
+                print(f'Массив отсортирован за {t:.7f} секунд')
                 input('Нажмите, чтобы продолжить\n')
             else:
-                input('Ошибка\n')
+                input('Ошибка\n')   
 
         elif User_ansver=='6': #Быстрая сортировка
+            start=time.perf_counter()
             data=quick_sort(data)
+            t=(time.perf_counter()-start)
             if sort_check(data):    
-                print(f'Массив отсортирован')
+                print(f'Массив отсортирован за {t:.7f} секунд')
                 input('Нажмите, чтобы продолжить\n')
             else:
-                input('Ошибка\n')
-                
+                input('Ошибка\n')              
             
         elif User_ansver=='7': #Сортировка шелла
+            start=time.perf_counter()
             data=shell_sort(data)
+            t=(time.perf_counter()-start)
             if sort_check(data):    
-                print(f'Массив отсортирован')
+                print(f'Массив отсортирован за {t:.7f} секунд')
                 input('Нажмите, чтобы продолжить\n')
             else:
                 input('Ошибка\n')
