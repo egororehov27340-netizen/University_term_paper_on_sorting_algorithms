@@ -1,14 +1,15 @@
 import random
 import time
 import statistics
+import math
 
-# 4 вида сортировки, +
+# 5 видов сортировки, +
 # прогнать по разным длинам, +
-# сделать график,
+# сделать график, +
 # сортировка текста (буквы и слова)
 
 def sort_check(mass):
-    return all([mass[n]<=mass[n+1] for n in range(len(mass)-1)])
+    return all(mass[n]<=mass[n+1] for n in range(len(mass)-1))
 
 def straight_up_searth(data): # 1
     try:
@@ -139,9 +140,10 @@ def draw_grouped(data_list):
     names = list(data_list[0].keys())
     N=[10, 100 ,200, 1000, 3000, 5000, 10000]
 
-    print(f"\n=== {"Сравнение сортировок"} ===")
-    print("Размер   | " + " | ".join(f"{n:<25}" for n in names),"| ")
-    print("-" * 149)
+    print("\n=== Сравнение сортировок ===")
+    line="Размер   | " + " | ".join(f"{n:<25}" for n in names)+' |'
+    print(line)
+    print("-" * len(line))
 
     for cnt,arr in enumerate(data_list):
         row = f"N={N[cnt]:<7}| "
@@ -151,7 +153,7 @@ def draw_grouped(data_list):
             row += f"{'█'*bar_len:<25} | "
         print(row)
 
-    print("-" * 149)
+    print("-" * len(line))
     print('\n=== (Скорость находится относительно самой медленной сортировки, чем меньше - тем лучше!) ===')
 
 def speed_test(): # 11
