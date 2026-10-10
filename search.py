@@ -134,22 +134,46 @@ def Massive_generator(): # 8
         print("Ошибка: Введите корректное число")
         return Massive_generator() 
 
+def draw_grouped(data_list):
+
+    names = list(data_list[0].keys())
+    N=[10, 100 ,200, 1000, 3000, 5000, 10000]
+
+    print(f"\n=== {"Сравнение сортировок"} ===")
+    print("Размер   | " + " | ".join(f"{n:<25}" for n in names),"| ")
+    print("-" * 149)
+
+    for cnt,arr in enumerate(data_list):
+        row = f"N={N[cnt]:<7}| "
+        max_val = max(arr.values())
+        for n in names:
+            bar_len = max(1,round(arr[n] / max_val * 25)) if arr[n] > 0 else 0
+            row += f"{'█'*bar_len:<25} | "
+        print(row)
+
+    print("-" * 149)
+    print('\n=== (Скорость находится относительно самой медленной сортировки, чем меньше - тем лучше!) ===')
+
 def speed_test(): # 11
     sorts = [bubble_sort, insertion_sort, sort_by_another_massive, quick_sort, shell_sort]
+    slow_sorts=[bubble_sort, insertion_sort]
+    all_results=[]
 
-    for n in [200, 1000, 3000]:
+    for n in [10, 100 ,200, 1000, 3000, 5000, 10000]:
         base = [random.randint(0, 100000) for _ in range(n)]
-        repeats = 3 if n <= 1000 else 1
         inputs = []
-        for _ in range(repeats):
+        for _ in range(3):
             random.shuffle(base)
             inputs.append(base.copy())
+
+        for func in sorts:
+            func(inputs[0].copy())
 
         result = {}
         for func in sorts:
             times = []
-            for arr in inputs:
-                data1 = arr.copy()
+            if func in slow_sorts and n>=3000:
+                data1 = inputs[0].copy()
                 start = time.perf_counter()
                 try:
                     func(data1)
@@ -157,12 +181,25 @@ def speed_test(): # 11
                     print(f'{func.__name__}: ошибка {e}')
                     break
                 times.append(time.perf_counter() - start)
+
+            else:
+                for arr in inputs:
+                    data1 = arr.copy()
+                    start = time.perf_counter()
+                    try:
+                        func(data1)
+                    except Exception as e:
+                        print(f'{func.__name__}: ошибка {e}')
+                        break
+                    times.append(time.perf_counter() - start)
             if times:
                 result[func.__name__] = statistics.median(times)
-
+        
+        all_results.append(result)
         print(f'--- n = {n} ---')
         for name, t in sorted(result.items(), key=lambda x: x[1]):
             print(f'{name:25} {t:13f}')
+    draw_grouped(all_results)
 
 def main():
     data=Massive_generator()
@@ -178,7 +215,7 @@ def main():
               '8 - Изменить вид списка \n'
               '9 - перемешать список \n'
               '10 - показать текущий массив \n'
-              '11 - Сравнить скорость сортировок(при 200, 1000 и 3000 элементов)\n'
+              '11 - Сравнить скорость сортировок(от 10 до 10000 элементов)\n'
               '0 — Выход')
         User_ansver=input()
 
