@@ -8,8 +8,124 @@ import math
 # сделать график, +
 # сортировка текста (буквы и слова)
 
-def sort_check(mass):
-    return all(mass[n]<=mass[n+1] for n in range(len(mass)-1))
+class App:
+
+    def __init__(self):
+        self.data=Massive_generator()
+        self.commands={"1":self.cmd_straight_up_searth,
+                       "2":self.cmd_bin_search,
+                       "3":self.cmd_bubble,
+                       "4":self.cmd_insert,
+                       "5":self.cmd_another,
+                       "6":self.cmd_quick,
+                       "7":self.cmd_shell,
+                       "8":self.cmd_change,
+                       "9":self.cmd_shuffle,
+                       "10":self.cmd_show,
+                       "11":self.cmd_speed_test,
+                       "0":self.cmd_exit
+        }
+
+    def show_menu(self):
+        print('Выберите действие: \n'
+              '1 — Последовательный поиск \n'
+              '2 — Бинарный поиск \n'
+              '3 — Bubble сортировка \n'
+              '4 — Сортировка вставками \n'
+              '5 — Сортировка дополнительным массивом \n'
+              '6 — Быстрая сортировка \n'
+              '7 - Сортировка шелла \n'
+              '8 - Изменить вид списка \n'
+              '9 - перемешать список \n'
+              '10 - показать текущий массив \n'
+              '11 - Сравнить скорость сортировок(от 10 до 10000 элементов)\n'
+              '0 - Выход\n'
+        )
+
+    def cmd_straight_up_searth(self):
+        print(straight_up_searth(self.data))
+
+    def cmd_bin_search(self):
+        print(bin_search(self.data))
+
+    def cmd_bubble(self):
+        self.data=menu_sorts(self.data,bubble_sort)
+
+    def cmd_insert(self):
+        self.data=menu_sorts(self.data,insertion_sort)
+
+    def cmd_another(self):
+        self.data=menu_sorts(self.data,sort_by_another_massive)
+
+    def cmd_quick(self):
+        self.data=menu_sorts(self.data,quick_sort)
+
+    def cmd_shell(self):
+        self.data=menu_sorts(self.data,shell_sort)
+
+    def cmd_change(self):
+        self.data=Massive_generator()
+
+    def cmd_shuffle(self):
+        random.shuffle(self.data)
+        print('Массив перемешан')
+        input('Нажмите, чтобы продолжить\n')  
+
+    def cmd_show(self):
+        print(self.data,'\n')
+        input('Нажмите, чтобы продолжить\n')  
+
+    def cmd_speed_test(self):
+        speed_test()
+        input('Нажмите, чтобы продолжить\n')   
+
+    def run(self):
+        while True:
+            self.show_menu()
+            choice = input("> ").strip()
+            action = self.commands.get(choice)
+            if action:
+                action()
+            else:
+                print("Неверный выбор")
+
+    def cmd_exit(self):
+        raise SystemExit
+
+
+def menu_sorts(data,sort_func,reverse=False):
+    start=time.perf_counter()
+    data=sort_func(data)
+    t=(time.perf_counter()-start)  
+    if sort_check(data, reverse=reverse):
+        print(f'Массив отсортирован за {t:.7f} секунд')
+    else:
+        print(f'Ошибка: {sort_func} не отсортировал!')
+    input('Нажмите, чтобы продолжить\n')
+    return data
+
+
+def sort_check(mass, key=None, reverse=False):
+    it = iter(mass)
+    try:
+        prev = next(it)
+    except StopIteration:
+        return True
+
+    prev_k = key(prev) if key is not None else prev
+
+    for item in it:
+        cur_k = key(item) if key is not None else item
+        if reverse:
+            if prev_k < cur_k:
+                return False
+        else:
+            if prev_k > cur_k:
+                return False
+        prev_k = cur_k
+
+    return True
+
 
 def straight_up_searth(data): # 1
     try:
@@ -25,7 +141,8 @@ def straight_up_searth(data): # 1
             input('Ошибка: Число вне списка\n')
     except ValueError:
         print("Ошибка: Введите корректное число")
-        
+
+
 def bin_search(data): # 2
     try:
         search_num=int(input(f'Введите число от {min(data)} до {max(data)-1}: '))
@@ -51,7 +168,8 @@ def bin_search(data): # 2
             input('Ошибка: Число вне списка\n')
     except ValueError:
         print('Ошибка: Число вне заданого отрезка')
-        
+
+
 def bubble_sort(data): # 3
     n=len(data)
     for i in range(n-1):
@@ -75,11 +193,12 @@ def insertion_sort(data): # 4
         data[j + 1] = key
     return data
 
+
 def sort_by_another_massive(data2): # 5
     data=data2.copy()
     sorted_massive=[]
     while data:
-        m = max(data)
+        m = min(data)
         sorted_massive.append(m)
         data.remove(m)
     return sorted_massive
@@ -94,6 +213,7 @@ def quick_sort(mass): # 6
     right=[x for x in mass if x>pivot]
     return quick_sort(left) + middle + quick_sort(right)
 
+
 def shell_sort(data): # 7
     n=len(data)
     gap=n//2
@@ -106,6 +226,7 @@ def shell_sort(data): # 7
             data[i]=tmp
         gap//=2
     return data
+
 
 def Massive_generator(): # 8
     try:
@@ -135,6 +256,7 @@ def Massive_generator(): # 8
         print("Ошибка: Введите корректное число")
         return Massive_generator() 
 
+
 def draw_grouped(data_list):
 
     names = list(data_list[0].keys())
@@ -154,7 +276,8 @@ def draw_grouped(data_list):
         print(row)
 
     print("-" * len(line))
-    print('\n=== (Скорость находится относительно самой медленной сортировки, чем меньше - тем лучше!) ===')
+    print('\n=== (Скорость находится относительно самой медленной сортировки, чем меньше - тем лучше!) ===\n')
+
 
 def speed_test(): # 11
     sorts = [bubble_sort, insertion_sort, sort_by_another_massive, quick_sort, shell_sort]
@@ -203,102 +326,7 @@ def speed_test(): # 11
             print(f'{name:25} {t:13f}')
     draw_grouped(all_results)
 
-def main():
-    data=Massive_generator()
-    while True:
-        print('Выберите действие: \n'
-              '1 — Последовательный поиск \n'
-              '2 — Бинарный поиск \n'
-              '3 — Bubble сортировка \n'
-              '4 — Сортировка вставками \n'
-              '5 — Сортировка выбором \n'
-              '6 — Быстрая сортировка \n'
-              '7 - Сортировка шелла \n'
-              '8 - Изменить вид списка \n'
-              '9 - перемешать список \n'
-              '10 - показать текущий массив \n'
-              '11 - Сравнить скорость сортировок(от 10 до 10000 элементов)\n'
-              '0 — Выход')
-        User_ansver=input()
-
-        if User_ansver=='1': #Последовательный поиск 
-            straight_up_searth(data)
-
-        elif User_ansver=='2': #Бинарный поиск 
-            bin_search(data)
-
-        elif User_ansver=='3': #Пузырьковая сортировка 
-            start=time.perf_counter()
-            data=bubble_sort(data)
-            t=(time.perf_counter()-start)
-            if sort_check(data):    
-                print(f'Массив отсортирован за {t:.7f} секунд')
-                input('Нажмите, чтобы продолжить\n')
-            else:
-                input('Ошибка\n')   
-
-        elif User_ansver=='4': #Сортировка вставками
-            start=time.perf_counter()
-            data=insertion_sort(data)
-            t=(time.perf_counter()-start)
-            if sort_check(data):    
-                print(f'Массив отсортирован за {t:.7f} секунд')
-                input('Нажмите, чтобы продолжить\n')
-            else:
-                input('Ошибка\n')   
-
-        elif User_ansver=='5': #Сортировка дополнительный массивом
-            start=time.perf_counter()
-            data=sort_by_another_massive(data)
-            t=(time.perf_counter()-start)
-            if sort_check(data):    
-                print(f'Массив отсортирован за {t:.7f} секунд')
-                input('Нажмите, чтобы продолжить\n')
-            else:
-                input('Ошибка\n')   
-
-        elif User_ansver=='6': #Быстрая сортировка
-            start=time.perf_counter()
-            data=quick_sort(data)
-            t=(time.perf_counter()-start)
-            if sort_check(data):    
-                print(f'Массив отсортирован за {t:.7f} секунд')
-                input('Нажмите, чтобы продолжить\n')
-            else:
-                input('Ошибка\n')              
-            
-        elif User_ansver=='7': #Сортировка шелла
-            start=time.perf_counter()
-            data=shell_sort(data)
-            t=(time.perf_counter()-start)
-            if sort_check(data):    
-                print(f'Массив отсортирован за {t:.7f} секунд')
-                input('Нажмите, чтобы продолжить\n')
-            else:
-                input('Ошибка\n')
-
-        elif User_ansver=='8': #Изменить вид списка
-            data=Massive_generator()
-            
-        elif User_ansver=='9': #Перемешать список
-            random.shuffle(data)
-            print(f'Массив перемешан')
-            
-        elif User_ansver=='10': #Показать список
-            print(data)
-            input('Нажмите, чтобы продолжить\n')
-            
-        elif User_ansver=='11': #Сравнить скорость сортировок
-            speed_test()
-            input('Нажмите, чтобы продолжить\n')
-        
-        elif User_ansver=='0': #Выход
-            break
-
-        elif User_ansver:
-            print('Ошибка: Введите корректное значение')
 
 if __name__ == "__main__":
-    main()
-    
-
+    menu=App()
+    menu.run()
