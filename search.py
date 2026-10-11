@@ -1,7 +1,6 @@
 import random
 import time
 import statistics
-import math
 
 # 5 видов сортировки, +
 # прогнать по разным длинам, +
@@ -43,10 +42,10 @@ class App:
         )
 
     def cmd_straight_up_searth(self):
-        print(straight_up_searth(self.data))
+        straight_up_searth(self.data)
 
     def cmd_bin_search(self):
-        print(bin_search(self.data))
+        bin_search(self.data)
 
     def cmd_bubble(self):
         self.data=menu_sorts(self.data,bubble_sort)
@@ -93,21 +92,21 @@ class App:
         raise SystemExit
 
 
-def menu_sorts(data,sort_func,reverse=False):
+def menu_sorts(data,sort_func):
     start=time.perf_counter()
     data=sort_func(data)
     t=(time.perf_counter()-start)  
-    if sort_check(data, reverse=reverse):
+    if sort_check(data):
         print(f'Массив отсортирован за {t:.7f} секунд')
     else:
-        print(f'Ошибка: {sort_func} не отсортировал!')
+        print(f'Ошибка: {sort_func.__name__} не отсортировал!')
     input('Нажмите, чтобы продолжить\n')
     return data
 
 
-def sort_check(mass, key=None, reverse=False):
+def sort_check(mass, reverse=False):
     lst = list(mass)
-    return lst == sorted(lst, key=key, reverse=reverse)
+    return lst == sorted(lst, reverse=reverse)
 
 
 def straight_up_searth(data): # 1
@@ -130,7 +129,7 @@ def bin_search(data): # 2
     try:
         search_num=int(input(f'Введите число от {min(data)} до {max(data)-1}: '))
         if search_num in data:
-            data.sort(); sw=0
+            sorted(data); sw=0
             while len(data)>1:
                 n=len(data)//2
                 if data[n]>search_num:
