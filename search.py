@@ -106,25 +106,8 @@ def menu_sorts(data,sort_func,reverse=False):
 
 
 def sort_check(mass, key=None, reverse=False):
-    it = iter(mass)
-    try:
-        prev = next(it)
-    except StopIteration:
-        return True
-
-    prev_k = key(prev) if key is not None else prev
-
-    for item in it:
-        cur_k = key(item) if key is not None else item
-        if reverse:
-            if prev_k < cur_k:
-                return False
-        else:
-            if prev_k > cur_k:
-                return False
-        prev_k = cur_k
-
-    return True
+    lst = list(mass)
+    return lst == sorted(lst, key=key, reverse=reverse)
 
 
 def straight_up_searth(data): # 1
