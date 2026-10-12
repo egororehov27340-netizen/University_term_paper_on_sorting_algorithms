@@ -1,6 +1,16 @@
 import random
 import time
 import statistics
+from data.data_generator import massive_generator
+from algoritms.sorts import (
+    sort_check,
+    bubble_sort,
+    insertion_sort,
+    sort_by_another_massive,
+    quick_sort,
+    shell_sort,
+)
+from algoritms.search import straight_up_searth, bin_search
 
 # 5 видов сортировки, +
 # прогнать по разным длинам, +
@@ -10,7 +20,7 @@ import statistics
 class App:
 
     def __init__(self):
-        self.data=Massive_generator()
+        self.data=massive_generator()
         self.commands={"1":self.cmd_straight_up_searth,
                        "2":self.cmd_bin_search,
                        "3":self.cmd_bubble,
@@ -63,7 +73,7 @@ class App:
         self.data=menu_sorts(self.data,shell_sort)
 
     def cmd_change(self):
-        self.data=Massive_generator()
+        self.data=massive_generator()
 
     def cmd_shuffle(self):
         random.shuffle(self.data)
@@ -102,141 +112,6 @@ def menu_sorts(data,sort_func):
         print(f'Ошибка: {sort_func.__name__} не отсортировал!')
     input('Нажмите, чтобы продолжить\n')
     return data
-
-
-def sort_check(mass, reverse=False):
-    lst = list(mass)
-    return lst == sorted(lst, reverse=reverse)
-
-
-def straight_up_searth(data): # 1
-    try:
-        search_num=int(input(f'Введите число от {min(data)} до {max(data)-1}: '))
-        sw=True
-        for n in range(len(data)):
-            if data[n]==search_num:
-                sw=False
-                print(f'Число {search_num} найдено за {n+1} шагов')
-                input('Нажмите, чтобы продолжить\n')
-                break
-        if sw:
-            input('Ошибка: Число вне списка\n')
-    except ValueError:
-        print("Ошибка: Введите корректное число")
-
-
-def bin_search(data): # 2
-    try:
-        search_num=int(input(f'Введите число от {min(data)} до {max(data)-1}: '))
-        if search_num in data:
-            sorted(data); sw=0
-            while len(data)>1:
-                n=len(data)//2
-                if data[n]>search_num:
-                    data=data[:n]
-                elif data[n]<search_num:
-                    data=data[n+1:]
-                elif data[n]==search_num:
-                    sw=1
-                    print(f'Число {search_num} найдено')
-                    input('Нажмите, чтобы продолжить\n')
-                    break
-            if sw and data[0]==search_num:
-                print(f'Число {search_num} найдено')
-                input('Нажмите, чтобы продолжить\n')
-            else:
-                print('Ошибка: Число не найдено')
-        else:
-            input('Ошибка: Число вне списка\n')
-    except ValueError:
-        print('Ошибка: Число вне заданого отрезка')
-
-
-def bubble_sort(data): # 3
-    n=len(data)
-    for i in range(n-1):
-        swap=0
-        for j in range(n-1-i):
-            if data[j]>data[j+1]:
-                data[j], data[j + 1] = data[j + 1], data[j]
-                swap=1
-        if not swap:
-            break
-    return data
-        
-        
-def insertion_sort(data): # 4
-    for i in range(1, len(data)):
-        key = data[i]
-        j = i - 1
-        while j >= 0 and data[j] > key:
-            data[j + 1] = data[j]
-            j -= 1
-        data[j + 1] = key
-    return data
-
-
-def sort_by_another_massive(data2): # 5
-    data=data2.copy()
-    sorted_massive=[]
-    while data:
-        m = min(data)
-        sorted_massive.append(m)
-        data.remove(m)
-    return sorted_massive
-    
-
-def quick_sort(mass): # 6
-    if len(mass)<=1:
-        return mass
-    pivot=mass[len(mass)//2]
-    left=[x for x in mass if x<pivot]
-    middle=[x for x in mass if x==pivot]
-    right=[x for x in mass if x>pivot]
-    return quick_sort(left) + middle + quick_sort(right)
-
-
-def shell_sort(data): # 7
-    n=len(data)
-    gap=n//2
-    while gap>0:
-        for i in range(gap,n):
-            tmp=data[i]
-            while i>=gap and data[i-gap]>tmp:
-                data[i]=data[i-gap]
-                i-=gap
-            data[i]=tmp
-        gap//=2
-    return data
-
-
-def Massive_generator(): # 8
-    try:
-        while True:
-            size=int(input('Введите размер массива: '))
-            if size>0:
-                break
-            else:
-                print('Ошибка: Размер должен быть больше нуля')
-        pov=input('В массиве будут повторятся символы?(Yes/No): ')
-        if pov in ['Yes','yes','Да','да']:
-            while True:
-                max=int(input('Введите введите максимально возможный эллемент массива: '))
-                min=int(input('Введите введите минимально возможный эллемент массива: '))
-                if min<=max:
-                    break
-                else:
-                    print('Ошибка: Минимум не может быть больше максимума')
-            data=[random.randint(min,max) for _ in range(size)]
-            print('Новый массив сгенерирован\n')
-            return data
-        else:
-            data=[int(x) for x in range(1,size+1)]
-            print('Новый массив сгенерирован\n')
-            return data
-    except ValueError:
-        print("Ошибка: Введите корректное число")
-        return Massive_generator() 
 
 
 def draw_grouped(data_list):
